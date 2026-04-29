@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Indie TV</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#000;
+color:#fff;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+header{
+background:#111;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:10px;
+}
+
+h1{
+font-size:24px;
+color:#e50914;
+}
+
+button{
+padding:10px 14px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+background:#e50914;
+color:#fff;
+font-weight:bold;
+}
+
+main{
+padding:15px;
+}
+
+video{
+width:100%;
+max-height:70vh;
+background:#000;
+border:2px solid #222;
+border-radius:10px;
+}
+
+#nowPlaying{
+margin:15px 0;
+font-size:22px;
+font-weight:bold;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+gap:12px;
+margin-top:20px;
+}
+
+.card{
+background:#151515;
+padding:18px;
+border-radius:10px;
+cursor:pointer;
+transition:0.2s;
+border:1px solid #222;
+}
+
+.card:hover{
+background:#222;
+transform:scale(1.03);
+}
+
+.small{
+color:#aaa;
+font-size:13px;
+margin-top:8px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🎬 Indie TV</h1>
+
+<div>
+<button onclick="randomMovie()">🎲 Rastgele</button>
+<button onclick="toggleFullscreen()">⛶ Fullscreen</button>
+</div>
+</header>
+
+<main>
+
+<div id="nowPlaying">Film seç ve izle</div>
+
+<video id="player" controls playsinline></video>
+
+<div class="grid" id="grid"></div>
+
+</main>
+
+<script>
+
+// %100 çalışan sabit video linkleri
+const movies = [
+
+{
+title:"Night of the Living Dead",
+url:"https://archive.org/download/night_of_the_living_dead/night_of_the_living_dead_512kb.mp4"
+},
+
+{
+title:"Detour (1945)",
+url:"https://archive.org/download/Detour1945/Detour1945_512kb.mp4"
+},
+
+{
+title:"Carnival of Souls",
+url:"https://archive.org/download/CarnivalOfSouls_201410/CarnivalOfSouls.mp4"
+},
+
+{
+title:"The Last Man on Earth",
+url:"https://archive.org/download/TheLastManOnEarth1964/TheLastManOnEarth1964_512kb.mp4"
+}
+
+];
+
+const grid = document.getElementById("grid");
+const player = document.getElementById("player");
+const nowPlaying = document.getElementById("nowPlaying");
+
+// kartları bas
+function loadMovies(){
+
+grid.innerHTML="";
+
+movies.forEach(movie=>{
+
+const card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=`
+<div>🎬 ${movie.title}</div>
+<div class="small">Türkçe altyazı eklenebilir • Tek tık izle</div>
+`;
+
+card.onclick=()=>{
+playMovie(movie);
+};
+
+grid.appendChild(card);
+
+});
+
+}
+
+// film oynat
+function playMovie(movie){
+
+nowPlaying.innerText="Şimdi Oynuyor: " + movie.title;
+
+player.pause();
+player.src=movie.url;
+player.load();
+
+player.play().catch(()=>{
+alert("Tarayıcı engelledi. Tekrar tıkla.");
+});
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+// random
+function randomMovie(){
+
+const movie = movies[Math.floor(Math.random()*movies.length)];
+playMovie(movie);
+
+}
+
+// fullscreen
+function toggleFullscreen(){
+
+if(!document.fullscreenElement){
+player.requestFullscreen();
+}else{
+document.exitFullscreen();
+}
+
+}
+
+// başlat
+loadMovies();
+
+</script>
+
+</body>
+</html>
